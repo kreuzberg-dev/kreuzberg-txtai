@@ -58,7 +58,7 @@ urls.Repository = "https://github.com/kreuzberg-dev/kreuzberg-txtai"
 
 [dependency-groups]
 dev = [
-  "mypy>=1.19",
+  "mypy>=1.20.1",
   "pre-commit>=4.5.1",
   "pytest>=9",
   "pytest-cov>=7.1",
