@@ -34,6 +34,7 @@ class KreuzbergPipeline:
             force_ocr: Force OCR even on text-extractable documents.
             config: Full ``ExtractionConfig`` override. When provided, the
                 scalar kwargs above are ignored.
+
         """
         if config is not None:
             self._config = config
@@ -59,6 +60,7 @@ class KreuzbergPipeline:
             A list of dicts with ``content`` and ``metadata`` keys. The list
             has one element per input path, in input order. A single-string
             input still returns a one-element list.
+
         """
         paths = [documents] if isinstance(documents, str) else list(documents)
         return [self._extract_one(path) for path in paths]
