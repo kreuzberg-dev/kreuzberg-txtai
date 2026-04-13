@@ -48,7 +48,7 @@ classifiers = [
 dependencies = [
   "kreuzberg>=4.8",
 ]
-optional-dependencies.txtai = [ "txtai>=7" ]
+optional-dependencies.txtai = [ "txtai>=9.7.0" ]
 urls.Changelog = "https://github.com/kreuzberg-dev/kreuzberg-txtai/blob/main/CHANGELOG.md"
 urls.Documentation = "https://docs.kreuzberg.dev"
 urls.Homepage = "https://github.com/kreuzberg-dev/kreuzberg-txtai"
