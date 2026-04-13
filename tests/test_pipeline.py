@@ -59,3 +59,26 @@ def test_empty_list_returns_empty_list(pipeline: KreuzbergPipeline) -> None:
     docs = pipeline([])
 
     assert docs == []
+
+
+def test_metadata_source_matches_input_path(pipeline: KreuzbergPipeline, sample_html_path: Path) -> None:
+    path = str(sample_html_path)
+
+    docs = pipeline(path)
+
+    assert docs[0]["metadata"]["source"] == path
+
+
+def test_metadata_mime_type_is_populated_for_html(pipeline: KreuzbergPipeline, sample_html_path: Path) -> None:
+    docs = pipeline(str(sample_html_path))
+
+    mime = docs[0]["metadata"]["mime_type"]
+    assert mime is not None
+    assert "html" in mime.lower()
+
+
+def test_metadata_has_stable_keys(pipeline: KreuzbergPipeline, sample_html_path: Path) -> None:
+    docs = pipeline(str(sample_html_path))
+
+    expected_keys = {"source", "mime_type", "title", "page_count"}
+    assert set(docs[0]["metadata"].keys()) == expected_keys
