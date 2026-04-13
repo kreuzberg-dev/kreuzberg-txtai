@@ -62,7 +62,7 @@ dev = [
   "pre-commit>=4.5.1",
   "pytest>=9",
   "pytest-cov>=7.1",
-  "ruff>=0.14",
+  "ruff>=0.15.10",
 ]
 
 [tool.hatch]
