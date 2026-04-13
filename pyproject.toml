@@ -1,0 +1,125 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kreuzberg-txtai"
+version = "0.1.0"
+description = "Kreuzberg document extraction pipeline for txtai and other callable-based frameworks"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Kreuzberg.dev", email = "admin@kreuzberg.dev" }]
+maintainers = [
+  { name = "Na'aman Hirschfeld", email = "naaman@kreuzberg.dev" },
+  { name = "Varun Tandon", email = "varun@kreuzberg.dev" },
+]
+keywords = [
+  "ai",
+  "document-extraction",
+  "document-intelligence",
+  "embeddings",
+  "kreuzberg",
+  "llm",
+  "nlp",
+  "ocr",
+  "pdf",
+  "rag",
+  "text-extraction",
+  "txtai",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Text Processing :: General",
+  "Topic :: Text Processing :: Indexing",
+  "Typing :: Typed",
+]
+dependencies = [
+  "kreuzberg>=4.8.0",
+]
+
+[project.optional-dependencies]
+txtai = ["txtai>=7.0"]
+
+[project.urls]
+Changelog = "https://github.com/kreuzberg-dev/kreuzberg-txtai/blob/main/CHANGELOG.md"
+Documentation = "https://docs.kreuzberg.dev"
+Homepage = "https://github.com/kreuzberg-dev/kreuzberg-txtai"
+Issues = "https://github.com/kreuzberg-dev/kreuzberg-txtai/issues"
+Kreuzberg = "https://github.com/kreuzberg-dev/kreuzberg"
+Repository = "https://github.com/kreuzberg-dev/kreuzberg-txtai"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.19",
+  "pre-commit>=4",
+  "pytest>=9",
+  "pytest-cov>=6",
+  "ruff>=0.14",
+]
+
+[tool.hatch]
+build.targets.sdist.include = [
+  "src/kreuzberg_txtai",
+  "CHANGELOG.md",
+  "LICENSE",
+  "README.md",
+  "pyproject.toml",
+]
+build.targets.wheel.packages = ["src/kreuzberg_txtai"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+lint.select = ["ALL"]
+lint.ignore = [
+  "ANN401",
+  "COM812",
+  "D100",
+  "D104",
+  "D107",
+  "D203",
+  "D213",
+  "ISC001",
+  "PLR0913",
+]
+lint.per-file-ignores."tests/**" = [
+  "ANN",
+  "D",
+  "PERF401",
+  "PERF402",
+  "PLC0415",
+  "PLR2004",
+  "S101",
+  "S105",
+  "S106",
+  "S108",
+  "SLF001",
+  "TC001",
+  "TC003",
+]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+[tool.pytest]
+ini_options.testpaths = ["tests"]
+ini_options.markers = [
+  "slow: marks tests that hit the OCR path or other slow Kreuzberg backends",
+]
+
+[tool.coverage]
+run.source = ["kreuzberg_txtai"]
+report.fail_under = 80
