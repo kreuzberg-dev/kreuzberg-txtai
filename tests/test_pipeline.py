@@ -82,3 +82,29 @@ def test_metadata_has_stable_keys(pipeline: KreuzbergPipeline, sample_html_path:
 
     expected_keys = {"source", "mime_type", "title", "page_count"}
     assert set(docs[0]["metadata"].keys()) == expected_keys
+
+
+def test_pdf_page_count_matches_fixture(pipeline: KreuzbergPipeline, sample_pdf_path: Path) -> None:
+    docs = pipeline(str(sample_pdf_path))
+
+    assert docs[0]["metadata"]["page_count"] == 3
+
+
+def test_pdf_title_is_populated(pipeline: KreuzbergPipeline, sample_pdf_path: Path) -> None:
+    docs = pipeline(str(sample_pdf_path))
+
+    title = docs[0]["metadata"]["title"]
+    assert title is not None
+    assert "Sample" in title
+
+
+def test_pdf_content_contains_fixture_text(pipeline: KreuzbergPipeline, sample_pdf_path: Path) -> None:
+    docs = pipeline(str(sample_pdf_path))
+
+    assert "Sample PDF" in docs[0]["content"]
+
+
+def test_pdf_mime_type_is_application_pdf(pipeline: KreuzbergPipeline, sample_pdf_path: Path) -> None:
+    docs = pipeline(str(sample_pdf_path))
+
+    assert docs[0]["metadata"]["mime_type"] == "application/pdf"
