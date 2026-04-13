@@ -108,3 +108,45 @@ def test_pdf_mime_type_is_application_pdf(pipeline: KreuzbergPipeline, sample_pd
     docs = pipeline(str(sample_pdf_path))
 
     assert docs[0]["metadata"]["mime_type"] == "application/pdf"
+
+
+def test_docx_extracts_content(pipeline: KreuzbergPipeline, sample_docx_path: Path) -> None:
+    docs = pipeline(str(sample_docx_path))
+
+    assert "DOCX" in docs[0]["content"]
+    mime = docs[0]["metadata"]["mime_type"]
+    assert mime is not None
+    assert "wordprocessingml" in mime or "officedocument" in mime
+
+
+def test_docx_title_is_populated(pipeline: KreuzbergPipeline, sample_docx_path: Path) -> None:
+    docs = pipeline(str(sample_docx_path))
+
+    title = docs[0]["metadata"]["title"]
+    assert title is not None
+    assert title == "DOCX Demo"
+
+
+def test_docx_page_count_from_metadata(pipeline: KreuzbergPipeline, sample_docx_path: Path) -> None:
+    docs = pipeline(str(sample_docx_path))
+
+    assert docs[0]["metadata"]["page_count"] == 3
+
+
+def test_html_extracts_content_as_markdown(pipeline: KreuzbergPipeline, sample_html_path: Path) -> None:
+    docs = pipeline(str(sample_html_path))
+
+    content = docs[0]["content"]
+    assert "Sample Document" in content
+    assert docs[0]["metadata"]["title"] == "Sample HTML Document"
+
+
+def test_txt_extracts_plain_content(pipeline: KreuzbergPipeline, sample_txt_path: Path) -> None:
+    docs = pipeline(str(sample_txt_path))
+
+    content = docs[0]["content"]
+    assert isinstance(content, str)
+    assert len(content) > 0
+    assert docs[0]["metadata"]["mime_type"] == "text/plain"
+    assert docs[0]["metadata"]["title"] is None
+    assert docs[0]["metadata"]["page_count"] is None
