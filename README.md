@@ -55,7 +55,7 @@ Requires Python 3.10+.
 ```python
 from kreuzberg_txtai import KreuzbergPipeline
 
-pipeline = KreuzbergPipeline(output_format="markdown")
+pipeline = KreuzbergPipeline()
 docs = pipeline(["doc1.pdf", "doc2.docx", "doc3.html"])
 
 for doc in docs:
@@ -80,9 +80,9 @@ Each element in `docs` looks like:
 
 - **88+ file formats** — PDF, DOCX, PPTX, XLSX, images, HTML, Markdown, plain text, and more via Kreuzberg
 - **Stable dict contract** — every extraction returns `content` + `metadata` with the same four keys, regardless of source format
-- **Rich metadata** — source path, MIME type, title, and page count surface directly; use the `config` escape hatch for deeper Kreuzberg fields
+- **Rich metadata** — source path, MIME type, title, and page count surface directly
 - **Batch support** — pass a single path or a `list[str]`; output is always `list[dict]` in input order
-- **OCR-ready** — `ocr_backend`, `ocr_language`, and `force_ocr` constructor kwargs map straight through to Kreuzberg's OCR pipeline
+- **Full Kreuzberg control** — pass an `ExtractionConfig` to drive output format, OCR backend/language, `force_ocr`, and every other Kreuzberg knob
 - **Framework-agnostic** — txtai is an optional extra, not a hard dependency; the pipeline works in any framework that accepts a callable
 - **Typed** — ships with a `py.typed` marker; full mypy strict compatibility
 
@@ -96,7 +96,7 @@ The dominant real-world pattern — extract, index, search:
 from kreuzberg_txtai import KreuzbergPipeline
 from txtai import Embeddings
 
-pipeline = KreuzbergPipeline(output_format="markdown")
+pipeline = KreuzbergPipeline()
 docs = pipeline(["doc1.pdf", "doc2.docx", "doc3.html"])
 
 embeddings = Embeddings({
@@ -129,18 +129,19 @@ list(wf(["doc1.pdf", "doc2.pdf"]))
 ### Framework-free loop
 
 ```python
+from kreuzberg import ExtractionConfig
 from kreuzberg_txtai import KreuzbergPipeline
 
-pipeline = KreuzbergPipeline(output_format="plain")
+pipeline = KreuzbergPipeline(config=ExtractionConfig(output_format="plain"))
 for doc in pipeline(["scan1.pdf", "scan2.pdf"]):
     print(doc["metadata"]["source"], "->", len(doc["content"]), "chars")
 ```
 
 No txtai needed — the class works on just the core `kreuzberg` dependency.
 
-### Full Kreuzberg config override
+### Tuning extraction with `ExtractionConfig`
 
-For knobs that aren't exposed as top-level kwargs, pass an `ExtractionConfig` directly. When `config` is provided, the scalar kwargs (`output_format`, `ocr_backend`, `ocr_language`, `force_ocr`) are ignored:
+Every Kreuzberg knob — output format, OCR backend and language, `force_ocr`, chunking, custom mime handling — lives on `ExtractionConfig`. Build one and hand it to the pipeline:
 
 ```python
 from kreuzberg import ExtractionConfig, OcrConfig
@@ -156,21 +157,19 @@ pipeline = KreuzbergPipeline(config=custom)
 docs = pipeline("scanned_report.pdf")
 ```
 
+See the [Kreuzberg docs](https://docs.kreuzberg.dev) for the full list of `ExtractionConfig` and `OcrConfig` fields.
+
 ## Constructor
 
 | Parameter | Type | Default | Notes |
 |---|---|---|---|
-| `output_format` | `str` | `"markdown"` | Kreuzberg output format (`"plain"`, `"markdown"`, `"html"`, `"djot"`, `"structured"`) |
-| `ocr_backend` | `str \| None` | `None` | OCR engine; `None` uses Kreuzberg's default backend |
-| `ocr_language` | `str \| None` | `None` | ISO 639 code; `None` uses the backend default |
-| `force_ocr` | `bool` | `False` | Force OCR even on text-extractable PDFs |
-| `config` | `ExtractionConfig \| None` | `None` | Full override; bypasses the scalar kwargs when provided |
+| `config` | `ExtractionConfig \| None` | `None` | Drives output format, OCR settings, `force_ocr`, and every other Kreuzberg option. `None` falls back to Kreuzberg's defaults. |
 
 ## Return Shape
 
 `__call__` always returns `list[dict]` — a single-path input still returns a length-1 list. Each dict has exactly two top-level keys:
 
-- `content` — the extracted text in the requested `output_format`
+- `content` — the extracted text in the format set by `config.output_format` (Kreuzberg's default when no config is passed)
 - `metadata` — a dict with exactly four keys: `source`, `mime_type`, `title`, `page_count`
 
 Missing metadata fields are `None` (rather than omitted) to keep the dict shape stable across document types.

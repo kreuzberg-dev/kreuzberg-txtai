@@ -1,16 +1,11 @@
 """Tests for kreuzberg_txtai.pipeline.KreuzbergPipeline."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import pytest
-from kreuzberg import ExtractionConfig, OcrConfig
+from kreuzberg import ExtractionConfig
 
 from kreuzberg_txtai import KreuzbergPipeline
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 @pytest.fixture
@@ -153,49 +148,24 @@ def test_txt_extracts_plain_content(pipeline: KreuzbergPipeline, sample_txt_path
     assert docs[0]["metadata"]["page_count"] is None
 
 
-def test_default_constructor_builds_config() -> None:
+def test_default_constructor_leaves_config_none() -> None:
     pipe = KreuzbergPipeline()
 
-    assert isinstance(pipe._config, ExtractionConfig)
-    assert pipe._config.output_format == "markdown"
-    assert pipe._config.force_ocr is False
-    assert pipe._config.ocr is None
+    assert pipe._config is None
 
 
-def test_output_format_kwarg_forwarded_to_config() -> None:
-    pipe = KreuzbergPipeline(output_format="plain")
-
-    assert pipe._config.output_format == "plain"
-
-
-def test_force_ocr_kwarg_forwarded_to_config() -> None:
-    pipe = KreuzbergPipeline(force_ocr=True)
-
-    assert pipe._config.force_ocr is True
-
-
-def test_ocr_kwargs_build_nested_ocr_config() -> None:
-    pipe = KreuzbergPipeline(ocr_backend="tesseract", ocr_language="eng")
-
-    assert isinstance(pipe._config.ocr, OcrConfig)
-    assert pipe._config.ocr.backend == "tesseract"
-    assert pipe._config.ocr.language == "eng"
-
-
-def test_ocr_kwargs_left_unset_leave_ocr_config_none() -> None:
-    pipe = KreuzbergPipeline()
-
-    assert pipe._config.ocr is None
-
-
-def test_config_override_bypasses_scalar_kwargs() -> None:
+def test_config_is_stored_verbatim() -> None:
     override = ExtractionConfig(output_format="plain")
-    pipe = KreuzbergPipeline(
-        output_format="markdown",
-        ocr_backend="tesseract",
-        force_ocr=True,
-        config=override,
-    )
+    pipe = KreuzbergPipeline(config=override)
 
     assert pipe._config is override
-    assert pipe._config.output_format == "plain"
+
+
+def test_config_drives_extraction_output_format(sample_html_path: Path) -> None:
+    plain = KreuzbergPipeline(config=ExtractionConfig(output_format="plain"))
+    markdown = KreuzbergPipeline(config=ExtractionConfig(output_format="markdown"))
+
+    plain_content = plain(str(sample_html_path))[0]["content"]
+    markdown_content = markdown(str(sample_html_path))[0]["content"]
+
+    assert plain_content != markdown_content

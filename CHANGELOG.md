@@ -14,8 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `list[dict]` with `content` and `metadata` fields (source, MIME type, title,
   page count).
 - Support for single-path and batch (`list[str]`) inputs.
-- Constructor kwargs: `output_format`, `ocr_backend`, `ocr_language`,
-  `force_ocr`, plus a `config` escape hatch accepting a full `ExtractionConfig`.
+- Single `config` constructor parameter accepting a full Kreuzberg
+  `ExtractionConfig` for output format, OCR, and every other knob.
 - Optional `txtai` extra for consumers who want to wire the output into
   `Embeddings.index` or `Task(pipe)` workflows.
 - PEP 561 `py.typed` marker.
