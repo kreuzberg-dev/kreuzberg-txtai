@@ -24,17 +24,17 @@
   </a>
 </div>
 
+<img width="3384" height="573" alt="Kreuzberg Banner" src="https://github.com/user-attachments/assets/1b6c6ad7-3b6d-4171-b1c9-f2026cc9deb8" />
+
 <div align="center" style="margin-top: 20px;">
   <a href="https://discord.gg/xt9WY3GnKR">
     <img height="22" src="https://img.shields.io/badge/Discord-Join%20our%20community-7289da?logo=discord&logoColor=white" alt="Discord">
   </a>
 </div>
 
-## Overview
+A [Kreuzberg](https://github.com/kreuzberg-dev/kreuzberg)-backed document extraction pipeline for [txtai](https://github.com/neuml/txtai) and any Python framework built around the `__call__` convention.
 
-**kreuzberg-txtai** is a [Kreuzberg](https://github.com/kreuzberg-dev/kreuzberg)-backed document extraction pipeline for [txtai](https://github.com/neuml/txtai) and any other Python framework built around the `__call__` convention. It replaces txtai's built-in `Textractor` (Apache Tika-based) with Kreuzberg's Rust-powered extraction stack, surfacing rich metadata — title, MIME type, page count — that Tika flattens away.
-
-The core is a single class, `KreuzbergPipeline`, that turns document paths into a `list[dict]` with `content` and `metadata` fields, ready to plug into an embeddings index, a workflow task, or a plain `for` loop.
+`KreuzbergPipeline` replaces txtai's built-in `Textractor` (Apache Tika-based) with Kreuzberg's Rust-powered extraction stack, turning document paths into a `list[dict]` with `content` and `metadata` fields — surfacing title, MIME type, and page count that Tika flattens away.
 
 ## Installation
 
