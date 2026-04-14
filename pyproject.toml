@@ -48,7 +48,7 @@ classifiers = [
 dependencies = [
   "kreuzberg>=4.8",
 ]
-optional-dependencies.txtai = [ "txtai>=9.7.0" ]
+optional-dependencies.txtai = [ "txtai>=9.7" ]
 urls.Changelog = "https://github.com/kreuzberg-dev/kreuzberg-txtai/blob/main/CHANGELOG.md"
 urls.Documentation = "https://docs.kreuzberg.dev"
 urls.Homepage = "https://github.com/kreuzberg-dev/kreuzberg-txtai"
@@ -61,7 +61,7 @@ dev = [
   "mypy>=1.19",
   "pre-commit>=4.5.1",
   "pytest>=9",
-  "pytest-cov>=7.1.0",
+  "pytest-cov>=7.1",
   "ruff>=0.14",
 ]
 
