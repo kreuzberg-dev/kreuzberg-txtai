@@ -42,3 +42,9 @@ Thumbs.db
 
 # uv
 .uv/
+
+# AI Rules generated files
+CLAUDE.md
+AGENTS.md
+.claude/
+.mcp.json
